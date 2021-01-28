@@ -37,16 +37,12 @@ if (!isProduction) {
   setupProxy(app);
 }
 
-// юзаем просто раздачу статики в режиме разработки
-// в продакшене юзаем nginx
-if (!isProduction) {
-  app.use(
-    '/static',
-    express.static(path.resolve(__dirname, 'public'), {
-      maxAge: '1ms',
-    }),
-  );
-}
+app.use(
+  '/static',
+  express.static(path.resolve(__dirname, 'public'), {
+    maxAge: '1ms',
+  }),
+);
 
 app.use((req, res, next) => {
   app.set('etag', false);

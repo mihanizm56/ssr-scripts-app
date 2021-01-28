@@ -77,7 +77,7 @@ export const ssr = () => async (
 
     // Определение чанков скриптов и стилей для текущего роута
     // (набивка чанков стилей и скриптов из манифеста chunk-manifest.json)
-    const { scripts, styles } = collectRouteChunks({
+    const { scripts, styles, inlineStyles } = collectRouteChunks({
       chunks,
       routeChunks: routerDeps.getChunks(route.name) || [],
     });
@@ -101,6 +101,7 @@ export const ssr = () => async (
         ogUrl: routeActionResult.ogUrl,
         ogImage: routeActionResult.ogImage,
         styles,
+        inlineStyles,
         scripts,
         children: renderedApp,
         ssrData,

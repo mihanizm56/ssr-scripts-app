@@ -14,7 +14,7 @@ import routes from '../pages/routes';
 const customWindow = window as IWindow;
 
 // DOM элемент приложения
-const container = document.getElementById('app');
+const container = document.getElementById('root');
 
 // Получение данных с севера через window
 // const {} = customWindow.ssrData;

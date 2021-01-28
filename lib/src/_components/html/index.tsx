@@ -11,6 +11,7 @@ export type PropsType = React.Props<any> & {
   ogUrl?: string;
   ogImage?: string;
   styles?: string[];
+  inlineStyles?: string;
   scripts?: string[];
   ssrData?: Record<string, any>;
   children?: string;
@@ -30,6 +31,7 @@ export const Html = ({
   ssrData,
   children,
   clientEnvs,
+  inlineStyles,
 }: PropsType) => (
   <html lang="en">
     <head>
@@ -65,6 +67,13 @@ export const Html = ({
         type="font/woff2"
       />
 
+      <style
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: inlineStyles,
+        }}
+      />
+
       {description && <meta content={description} name="description" />}
       {keywords && <meta content={keywords} name="keywords" />}
       {canonical && <link href={canonical} rel="canonical" />}
@@ -77,17 +86,10 @@ export const Html = ({
       {ogUrl && <meta content={ogUrl} property="og:url" />}
       {ogImage && <meta content={ogImage} property="og:image" />}
 
-      {styles.map(style => (
-        <link key={style} as="style" href={style} rel="preload" />
-      ))}
       {scripts.map(script => (
         <link key={script} as="script" href={script} rel="preload" />
       ))}
       <link href="/static/favicon.ico" rel="shortcut icon" type="image/png" />
-
-      {styles.map(style => (
-        <link key={style} rel="stylesheet" href={style} /> // eslint-disable-line
-      ))}
 
       <script
         // env переменные доступные на клиенте
@@ -111,7 +113,7 @@ export const Html = ({
       <div
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: children }}
-        id="app"
+        id="root"
       />
       {scripts.map(script => (
         <script key={script} src={script} />
