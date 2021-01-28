@@ -11,7 +11,7 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/runtime": "7.9.6",
-    "@mihanizm56/ssr-scripts": "0.2.3-beta.1",
+    "@mihanizm56/ssr-scripts": "0.2.3",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.5.0",
     "body-parser": "1.19.0",
