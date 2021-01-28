@@ -6,6 +6,7 @@
 const colors = require('colors');
 const username = require('os').userInfo().username;
 const path = require('path');
+const Copier = require('@mihanizm56/node-file-copier');
 const { Listr } = require('listr2');
 const { remove } = require('fs-extra');
 const { isWindows } = require('./is-windows');
@@ -146,6 +147,18 @@ class ExecutionRunner {
                 task: async () => {
                   await this.checkNPMDirs();
                   await this.uninstallInitialPackages();
+                },
+              },
+              {
+                title: 'Копирование файлов',
+                task: async () => {
+                  await exec('npm install ssr-scripts-app');
+                  await this.renameNpmFiles();
+                  await new Copier({
+                    arrayToCopy: this.arrayToCopy,
+                  }).activate();
+                  await exec('npm uninstall ssr-scripts-app');
+                  await process.chdir(this.pathToExecute);
                 },
               },
             ]),
