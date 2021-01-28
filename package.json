@@ -1,6 +1,6 @@
 {
   "name": "ssr-scripts-app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ssr boilerplate",
   "main": "index.js",
   "license": "MIT",

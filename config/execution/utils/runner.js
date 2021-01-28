@@ -209,34 +209,21 @@ class ExecutionRunner {
                 },
               },
               {
-                title: 'Запуск проверок',
-                task: async (ctx, task) => {
-                  task.newListr(
-                    [
-                      {
-                        title: 'Запуск Eslint and Stylelint',
-                        task: async () => {
-                          await exec('npm run lint');
-                        },
-                      },
-                      {
-                        title: 'Проверка типизации',
-                        task: async () => {
-                          await exec('npx tsc');
-                        },
-                      },
-                      {
-                        title: 'Сборка приложения',
-                        task: async () => {
-                          await exec('npm run build');
-                        },
-                      },
-                    ],
-                    {
-                      rendererOptions: { collapse: false },
-                      concurrent: true,
-                    },
-                  );
+                title: 'Запуск Eslint and Stylelint',
+                task: async () => {
+                  await exec('npm run lint');
+                },
+              },
+              {
+                title: 'Проверка типизации',
+                task: async () => {
+                  await exec('npx tsc');
+                },
+              },
+              {
+                title: 'Сборка приложения',
+                task: async () => {
+                  await exec('npm run build');
                 },
               },
             ]),
