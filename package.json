@@ -4,13 +4,13 @@
   "description": "ssr boilerplate",
   "main": "index.js",
   "license": "MIT",
-  "homepage": "https://github.com/mihanizm56/create-react-boilerplate#readme",
+  "homepage": "https://github.com/mihanizm56/ssr-scripts-app#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mihanizm56/create-react-boilerplate.git"
+    "url": "git+https://github.com/mihanizm56/ssr-scripts-app.git"
   },
   "bugs": {
-    "url": "https://github.com/mihanizm56/create-react-boilerplate/issues"
+    "url": "https://github.com/mihanizm56/ssr-scripts-app/issues"
   },
   "bin": "config/execution/executor.js",
   "scripts": {
