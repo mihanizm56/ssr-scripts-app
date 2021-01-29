@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { serialize } from '../../_utils/serialize';
 
-export type PropsType = React.Props<any> & {
+export type PropsType = PropsWithChildren<{
   req?: any;
   title: string;
   description?: string;
@@ -14,9 +14,8 @@ export type PropsType = React.Props<any> & {
   inlineStyles?: string;
   scripts?: string[];
   ssrData?: Record<string, any>;
-  children?: string;
   clientEnvs: string;
-};
+}>;
 
 export const Html = ({
   title,
@@ -26,7 +25,6 @@ export const Html = ({
   ogDescription,
   ogUrl,
   ogImage,
-  styles,
   scripts,
   ssrData,
   children,
@@ -110,11 +108,8 @@ export const Html = ({
       />
     </head>
     <body>
-      <div
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: children }}
-        id="root"
-      />
+      <div id="root">{children}</div>
+
       {scripts.map(script => (
         <script key={script} src={script} />
       ))}

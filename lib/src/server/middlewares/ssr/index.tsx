@@ -1,6 +1,6 @@
 import { Response, NextFunction, Request } from 'express';
 import React from 'react';
-import ReactDOM from 'react-dom/server';
+import { renderToNodeStream } from 'react-dom/server';
 import { cloneRouter, Router } from 'router5';
 import { actionHandler } from '../../../modules/router/middlewares';
 import { getChunks } from '../../../modules/router/_utils';
@@ -86,11 +86,6 @@ export const ssr = () => async (
       // данные для проброса на клиент
       const ssrData = {};
 
-      // рендер самого приложения
-      const renderedApp = ReactDOM.renderToString(
-        <App cookies={cookies} router={router} />,
-      );
-
       // Данные для отрисовки html страницы
       const data: IHtmlProps = {
         title: routeActionResult.title,
@@ -103,15 +98,19 @@ export const ssr = () => async (
         styles,
         inlineStyles,
         scripts,
-        children: renderedApp,
         ssrData,
         clientEnvs,
       };
 
-      const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
+      // отдаем декларацию первой
+      res.write('<!doctype html>');
 
-      res.status(routeActionResult.status || 200);
-      res.send(`<!doctype html>${html}`);
+      // рендер самой html страницы в поток и отдача браузеру
+      renderToNodeStream(
+        <Html {...data}>
+          <App cookies={cookies} router={router} />
+        </Html>,
+      ).pipe(res);
     } catch (error) {
       next(error);
     }
