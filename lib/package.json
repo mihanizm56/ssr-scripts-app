@@ -11,7 +11,7 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/runtime": "7.9.6",
-    "@mihanizm56/ssr-scripts": "0.2.3",
+    "@mihanizm56/ssr-scripts": "0.2.4",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.5.0",
     "body-parser": "1.19.0",
@@ -20,6 +20,7 @@
     "cross-env": "7.0.3",
     "enquirer": "2.3.6",
     "eslint": "6.8.0",
+    "node-sass": "4.14.1",
     "eslint-config-airbnb": "17.1.1",
     "eslint-config-prettier": "6.5.0",
     "eslint-config-react-app": "5.2.1",
