@@ -115,7 +115,8 @@ class ExecutionRunner {
           task: async (ctx, task) => {
             const inputPath = await task.prompt({
               type: 'Input',
-              message: 'Введите путь до установки проекта',
+              message:
+                'Введите путь до установки проекта (обязательно не текущая директория)',
             });
 
             if (!inputPath) {
