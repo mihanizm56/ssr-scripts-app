@@ -4,6 +4,7 @@ type ParamsType = {
     { js: Array<string>; css: Array<string>; inlineCss: string }
   >;
   routeChunks: Array<string>;
+  withInlineCss?: boolean;
 };
 
 type OutputType = {
@@ -15,6 +16,7 @@ type OutputType = {
 export const collectRouteChunks = ({
   chunks,
   routeChunks,
+  withInlineCss,
 }: ParamsType): OutputType =>
   routeChunks.reduce(
     (acc, chunkName) => {
@@ -29,7 +31,7 @@ export const collectRouteChunks = ({
           acc.styles = [...acc.styles, ...chunksForRoute.css];
         }
 
-        if (chunksForRoute.inlineCss) {
+        if (chunksForRoute.inlineCss && withInlineCss) {
           acc.inlineStyles = `${acc.inlineStyles}${chunksForRoute.inlineCss}`;
         }
       }
@@ -39,6 +41,6 @@ export const collectRouteChunks = ({
     {
       styles: chunks.client.css,
       scripts: chunks.client.js,
-      inlineStyles: chunks.client.inlineCss,
+      inlineStyles: '',
     },
   );

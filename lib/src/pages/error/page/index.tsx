@@ -1,10 +1,12 @@
-import React from 'react';
-import styles from './index.scss';
+import { PureComponent } from 'react';
+import { withRouter } from 'react-router5';
+import { ErrorBoundaryPage } from './_components/error-boundary-page';
 
-// Компонент должен быть классом так как в client.tsx на него должна быть возможность получить ref
-
-export class Page extends React.PureComponent<React.Props<any>> {
+// Компонент должен быть классом так как на него должна быть возможность получить ref
+export class WrappedComponent extends PureComponent {
   render() {
-    return <div className={styles.page}>500 – Error</div>;
+    return <ErrorBoundaryPage />;
   }
 }
+
+export const Page = withRouter<any>(WrappedComponent);

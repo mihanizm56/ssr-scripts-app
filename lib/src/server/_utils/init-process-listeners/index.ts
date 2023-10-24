@@ -1,7 +1,12 @@
 export const initProcessListeners = () => {
-  process.on('unhandledRejection', (reason, p) => {
-    console.error('Unhandled Rejection at:', p, 'reason:', reason);
+  process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection, reason:', reason);
     process.exit(1);
+  });
+
+  process.on('uncaughtException', (reason) => {
+    console.error('Unhandled Rejection, reason:', reason);
+    process.exit(0);
   });
 
   process.on('SIGINT', () => {

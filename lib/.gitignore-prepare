@@ -5,6 +5,7 @@ node_modules
 
 # Compiled output
 build
+public/icons/shared
 
 # Logs
 npm-debug.log*
@@ -26,3 +27,17 @@ yarn-error.log*
 # Misc
 .DS_Store
 .env
+
+local-deploy.sh
+local-start.sh
+test.sh
+test.txt
+logs.txt
+robots.txt
+sitemap.xml
+.eslintinfo
+.stylelintinfo
+external-envs.env
+like-prod.sh
+.stylelintinfo
+.eslintinfo

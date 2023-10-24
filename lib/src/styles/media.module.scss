@@ -1,0 +1,16 @@
+// media
+
+$max-mobile-small-width: 380px;
+$max-mobile-width: 480px;
+$max-tablet-width: 1024px;
+$max-mini-tablet-width: 640px;
+$max-mini-desktop-width: 1280px;
+$max-desktop-width: 1600px;
+
+$mini-mobile: "(max-width: #{$max-mobile-small-width})";
+$mobile: "(max-width: #{$max-mobile-width})";
+$tablet: "(max-width: #{$max-tablet-width})";
+$mini-tablet: "(max-width: #{$max-mini-tablet-width})";
+$mini-desktop: "(max-width: #{$max-mini-desktop-width})";
+$max-desktop: "(max-width: #{$max-desktop-width})";
+

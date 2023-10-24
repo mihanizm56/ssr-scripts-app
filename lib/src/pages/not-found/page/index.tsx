@@ -1,6 +1,6 @@
-import React from 'react';
-import styles from './index.scss';
+import { memo } from 'react';
+import styles from './index.module.scss';
 
-export const Page = React.memo(() => {
-  return <div className={styles.page}>404 – Not Found</div>;
+export const Page = memo(() => {
+  return <div className={styles.Page}>Not found page</div>;
 });

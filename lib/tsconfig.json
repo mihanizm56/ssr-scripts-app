@@ -1,9 +1,15 @@
 {
   "compilerOptions": {
+    // "incremental": true,
     "target": "esnext",
     "allowJs": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+    },
     "lib": [
       "dom",
       "dom.iterable"
@@ -20,5 +26,9 @@
   },
   "include": [
     "./src/",
+  ],
+  "exclude": [
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ]
 }

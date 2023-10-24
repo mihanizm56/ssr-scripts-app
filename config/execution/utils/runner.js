@@ -68,7 +68,11 @@ class ExecutionRunner {
     );
     const gitignoreNewFilePath = path.join(this.projectFolder, '.gitignore');
 
+    const npmrcOldFilePath = path.join(this.projectFolder, '.npm-prepare');
+    const npmrcNewFilePath = path.join(this.projectFolder, '.npmrc');
+
     await rename(gitignoreOldFilePath, gitignoreNewFilePath);
+    await rename(npmrcOldFilePath, npmrcNewFilePath);
   }
 
   async setupRoots() {
@@ -94,6 +98,7 @@ class ExecutionRunner {
       await cliRunner.run();
 
       this.finishTimer(timestampStart);
+
       console.log('Happy coding =)'.green);
     } catch (error) {
       console.error(
@@ -153,11 +158,15 @@ class ExecutionRunner {
                 title: 'Копирование файлов',
                 task: async () => {
                   await exec('npm install ssr-scripts-app');
+
                   await this.renameNpmFiles();
+
                   await new Copier({
                     arrayToCopy: this.arrayToCopy,
                   }).activate();
+
                   await exec('npm uninstall ssr-scripts-app');
+
                   await process.chdir(this.pathToExecute);
                 },
               },
@@ -167,30 +176,12 @@ class ExecutionRunner {
           title: 'Конфигурирование бойлерплейта',
           task: (ctx, task) =>
             task.newListr([
-              {
-                title: 'Установка Git',
-                task: async () => {
-                  await this.checkGitDir();
-                },
-              },
-              {
-                title: 'Добавление всех файлов проекта в гит (git add .)',
-                task: async () => {
-                  await exec('git add .');
-                },
-              },
-              {
-                title: 'Установка Husky',
-                task: async () => {
-                  await exec('npx husky');
-                },
-              },
-              {
-                title: 'Установка прав на директории проекта',
-                task: async () => {
-                  await this.setupRoots();
-                },
-              },
+              // {
+              //   title: 'Установка прав на директории проекта',
+              //   task: async () => {
+              //     await this.setupRoots();
+              //   },
+              // },
               {
                 title: 'Установка npm зависимостей',
                 task: async () => {

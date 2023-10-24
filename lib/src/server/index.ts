@@ -1,73 +1,93 @@
-/* eslint-disable no-console */
-
-import 'core-js';
-import 'regenerator-runtime/runtime';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable import/no-import-module-exports */
 import path from 'path';
 import dotenv from 'dotenv';
-import express from 'express';
-import bodyParser from 'body-parser';
-import { setServerEnvs as setServerGlobalEnvs } from './_utils/collect-envs/set-server-envs';
-import { setupProxy } from './proxy';
-import { ssr, errors } from './middlewares';
+import { configureCookies } from '@/_utils/cookies';
+import { IApplicationServer } from '@/_types';
+import { setServerEnvs as setServerGlobalEnvs } from '../_utils/collect-envs/set-server-envs';
 import { initProcessListeners } from './_utils/init-process-listeners';
+import { createHttpServer } from './_utils/create-http-server';
+import { pureStaticServer } from './_utils/static-server';
+import { spaMode } from './middlewares/spa-mode';
+import { ssrMode } from './middlewares/ssr-mode';
 
 initProcessListeners();
 
+// process.env.NODE_ENV is set by webpack before dotenv setup
 export const isProduction = process.env.NODE_ENV === 'production';
-const DEFAULT_PORT_VALUE = '3000';
 
 if (isProduction) {
   dotenv.config();
+  dotenv.config({ path: path.join(__dirname, '..', 'external-envs.env') });
 } else {
   dotenv.config({ path: path.join(__dirname, '..', '.env') });
 }
 
 setServerGlobalEnvs();
 
-if (!env.PORT) {
-  env.PORT = DEFAULT_PORT_VALUE;
-}
+const { FULL_SSR_ACTIVE } = process.env;
 
-const app = express();
+export const isFullSSRActive = Boolean(FULL_SSR_ACTIVE);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+const app: IApplicationServer = async (request, response) => {
+  if (isProduction) {
+    // in prod we send pure files without any libs
+    const isStaticFile = /(\/static)|(sw\.js)|(assetlinks\.json)/.test(
+      request.url,
+    );
 
-if (!isProduction) {
-  setupProxy(app);
-}
+    if (isStaticFile) {
+      pureStaticServer({ request, response });
 
-app.use(
-  '/static',
-  express.static(path.resolve(__dirname, 'public'), {
-    maxAge: '1ms',
-  }),
-);
+      return;
+    }
 
-app.use((req, res, next) => {
-  app.set('etag', false);
-  res.set('Cache-Control', 'no-store');
-  next();
-});
+    response.setHeader('etag', 'false');
+    response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('Content-Type', 'text/html');
+  } else {
+    // @ts-ignore
+    response.set({
+      etag: 'false',
+      'Cache-Control': 'no-store',
+      'Content-Type': 'text/html',
+    });
+  }
 
-// Обработка запросов ssr
-app.get('*', ssr());
+  const cookies = await configureCookies(request, response);
 
-// Обработка ошибок при ssr
-app.use(errors);
+  const ssrParams = {
+    request,
+    response,
+    cookies,
+  };
 
-// Запуск сервера
-if (!module.hot) {
-  app.listen(env.PORT, () => {
-    console.info(`The server is running at port ${env.PORT}`);
-  });
-}
+  if (isFullSSRActive) {
+    ssrMode(ssrParams);
+
+    return;
+  }
+
+  spaMode(ssrParams);
+};
 
 // Автоматический перезапуск сервера при изменениях в файлах
-// В режиме Hot Module Replacement
+// В режиме Hot Module Replacement на сервере
 if (module.hot) {
   (app as any).hot = module.hot;
   module.hot.decline();
 }
 
+// Запуск сервера
+if (!module.hot) {
+  try {
+    await createHttpServer(app);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
 export default app;
+
+export { setupProxy } from '../setupProxy';

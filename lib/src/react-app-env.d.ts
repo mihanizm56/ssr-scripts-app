@@ -18,7 +18,17 @@ declare module '*.png' {
   export default url;
 }
 
+declare module '*.docx' {
+  const url: string;
+  export default url;
+}
+
 declare module '*.jpg' {
+  const url: string;
+  export default url;
+}
+
+declare module '*.webp' {
   const url: string;
   export default url;
 }
@@ -45,6 +55,10 @@ declare const __DEV__: boolean; // eslint-disable-line no-underscore-dangle
 // Переменные окружения доступные на сервере и на клиенте
 declare const env: Record<string, string>;
 
-interface IWindow extends Window {
-  ssrData?: {};
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare interface Window {
+  env: Record<string, string>;
+  ssrData?: {
+    clientEnvs: string;
+  };
 }

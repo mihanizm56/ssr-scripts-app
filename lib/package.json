@@ -1,108 +1,79 @@
 {
-  "name": "boilerplate-frontend-ssr",
-  "version": "0.1.0",
+  "name": "ssr-boilerplate",
+  "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=18.8.0",
+    "npm": ">=8.18.0"
   },
   "browserslist": [
     "last 3 versions"
   ],
+  "scripts": {
+    "start": "npx cross-env NODE_ENV=development ssr-scripts start",
+    "start:api": "node server/app.js",
+    "start:full": "npx cross-env NODE_ENV=development DISABLE_PROGRESS=true concurrently --kill-others-on-fail \"ssr-scripts start\" \"nodemon ./server/app.js\"",
+    "serve": "node ./build/server.js",
+    "build": "npx cross-env NODE_ENV=production ssr-scripts build",
+    "build:analyse": "ssr-scripts build:analyse",
+    "build:spa": "node config/prerender-spa-html/bin.js",
+    "types": "tsc",
+    "cache-clean": "rm -fr node_modules/@mihanizm56/ssr-scripts/node_modules/.cache",
+    "lint": "npx eslint . --ext .ts,.tsx --fix --max-warnings=0 --cache --cache-location .eslintinfo && npx stylelint 'src/**/*.(scss|css)' --fix --cache --cache-location .stylelintinfo",
+    "lint:no-cache": "npx eslint src/ --ext .ts,.tsx --fix --max-warnings=0 && npx stylelint 'src/**/*.(scss|css)' --fix",
+    "docker": "docker build -t test-123456 -f config/deploy/test.Dockerfile ./ && docker run -it -p 8082:80 test-123456"
+  },
   "dependencies": {
-    "@babel/node": "7.8.7",
-    "@babel/runtime": "7.9.6",
-    "@mihanizm56/ssr-scripts": "0.2.5",
-    "@typescript-eslint/eslint-plugin": "2.34.0",
-    "@typescript-eslint/parser": "2.5.0",
-    "body-parser": "1.19.0",
+    "@mihanizm56/ssr-scripts": "0.5.1",
+    "@wildberries/service-router": "1.0.10",
+    "browserslist": "4.21.10",
     "cookie-universal": "2.1.4",
-    "core-js": "3.6.5",
     "cross-env": "7.0.3",
     "enquirer": "2.3.6",
-    "eslint": "6.8.0",
-    "node-sass": "4.14.1",
-    "eslint-config-airbnb": "17.1.1",
-    "eslint-config-prettier": "6.5.0",
-    "eslint-config-react-app": "5.2.1",
-    "eslint-import-resolver-alias": "1.1.2",
-    "eslint-import-resolver-typescript": "2.0.0",
-    "eslint-loader": "3.0.2",
-    "eslint-plugin-css-modules": "2.11.0",
-    "eslint-plugin-flowtype": "5.2.0",
-    "eslint-plugin-import": "2.18.2",
-    "eslint-plugin-jsx-a11y": "6.2.3",
-    "eslint-plugin-prettier": "3.1.1",
-    "eslint-plugin-react": "7.16.0",
-    "eslint-plugin-react-hooks": "2.2.0",
-    "eslint-plugin-security": "1.4.0",
-    "eslint-plugin-testcafe": "0.2.1",
-    "eslint-plugin-unused-imports": "0.1.3",
-    "express": "4.17.1",
-    "http-proxy-middleware": "1.0.4",
+    "http-proxy-middleware": "2.0.6",
     "listr2": "3.2.3",
-    "node-fetch": "2.6.1",
-    "normalize.css": "8.0.1",
-    "prettier": "1.18.2",
     "pretty-error": "2.1.1",
+    "process": "0.11.10",
     "promise-sequential": "1.1.1",
-    "react": "16.14.0",
-    "react-deep-force-update": "2.1.3",
-    "react-dom": "16.14.0",
+    "clsx": "1.2.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-router5": "7.1.0",
-    "regenerator-runtime": "0.13.5",
-    "reset-css": "5.0.1",
+    "react-transition-group": "4.4.5",
+    "sass": "1.62.1",
+    "tree-kill": "1.2.2",
+    "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "@types/history": "4.7.5",
+    "@types/node": "18.11.0",
+    "@types/react": "18.2.7",
+    "@types/react-dom": "18.2.4",
+    "@types/webpack-env": "1.18.0",
+    "@wildberries/eslint-config": "2.1.12",
+    "@wildberries/stylelint-config": "2.1.6",
+    "@types/react-transition-group": "4.4.6",
+    "colors": "1.4.0",
+    "concurrently": "8.2.2",
+    "cors": "2.8.5",
+    "cz-customizable": "6.2.0",
+    "glob": "7.1.6",
+    "http-errors": "1.8.0",
+    "morgan": "1.10.0",
+    "postcss": "8.4.23"
+  },
+  "peerDependencies": {
+    "body-parser": "1.19.0",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "js-file-download": "0.4.11",
+    "react-router5": "7.1.0",
+    "reselect": "4.0.0",
     "router5": "7.0.2",
     "router5-helpers": "8.0.0",
     "router5-plugin-browser": "8.0.1",
     "router5-plugin-logger": "8.0.1",
-    "router5-transition-path": "8.0.1",
-    "stylelint": "11.1.1",
-    "stylelint-config-recommended-scss": "4.0.0",
-    "stylelint-config-standard": "19.0.0",
-    "stylelint-order": "3.1.1",
-    "stylelint-scss": "3.12.0",
-    "typescript": "3.9.3"
+    "router5-transition-path": "8.0.1"
   },
-  "devDependencies": {
-    "@commitlint/cli": "8.2.0",
-    "@types/express": "4.17.6",
-    "@types/history": "4.7.5",
-    "@types/react": "16.9.35",
-    "@types/react-dom": "16.9.8",
-    "@types/react-redux": "7.1.9",
-    "@types/webpack-env": "1.16.0",
-    "@typescript-eslint/eslint-plugin": "2.7.0",
-    "@typescript-eslint/parser": "2.7.0",
-    "colors": "1.4.0",
-    "commitizen": "4.0.4",
-    "cz-customizable": "6.2.0",
-    "husky": "4.2.5"
-  },
-  "peerDependencies": {
-    "dotenv": "8.2.0"
-  },
-  "scripts": {
-    "serve": "node ./build/server.js",
-    "start": "npx cross-env NODE_ENV=development ssr-scripts start",
-    "build": "npx cross-env NODE_ENV=production ssr-scripts build",
-    "build:analyse": "ssr-scripts build:analyse",
-    "lint": "npx eslint src/ --ext .ts,.js,.tsx --fix && npx stylelint --fix --max-warnings=0 'src/**/*.{modules.scss,scss,css}' && git add .",
-    "commit": "git add . && git commit --no-edit",
-    "cache-clean": "rm -fr node_modules/@mihanizm56/ssr-scripts/node_modules/.cache"
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-customizable"
-    },
-    "cz-customizable": {
-      "config": "config/git/commitizen.js"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS -g config/git/commitlint.js",
-      "pre-commit": "node config/precommit-runner/bin.js",
-      "prepare-commit-msg": "node config/git/prepare-commit.js"
-    }
-  }
+  "config-overrides-path": "./config/webpack/config-overrides.js"
 }

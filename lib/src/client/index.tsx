@@ -1,23 +1,22 @@
-import 'core-js';
-import 'regenerator-runtime/runtime';
-import deepForceUpdate from 'react-deep-force-update';
-import React from 'react';
+/* eslint-disable import/no-import-module-exports */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import ReactDOM, { hydrate, render } from 'react-dom';
-import { actionHandler } from '../modules/router/middlewares';
-import { handleRedirect, setMeta } from '../modules/router/plugins';
-import { configureCookies } from '../modules/cookies';
-import { Page as ErrorPage } from '../pages/error/page';
-import { App } from '../_components/app';
-import { configureRouter } from '../modules/router';
-import routes from '../pages/routes';
+import { configureRouter } from '@wildberries/service-router';
+import { configureCookies } from '@/_utils/cookies';
+import { Page as ErrorPage } from '@/pages/error/page';
+import { App } from '@/_components/app';
+import { handleRedirect } from '@/_utils/router/plugins/client/handle-redirect';
+import { setMeta } from '@/_utils/router/plugins/client/set-meta';
+import { actionHandler } from '@/_utils/router/middlewares/action-handler';
+import routes from '@/pages/routes';
 
-const customWindow = window as IWindow;
+// const isProduction = process.env.NODE_ENV === 'production';
 
 // DOM элемент приложения
 const container = document.getElementById('root');
 
-// Получение данных с севера через window
-// const {} = customWindow.ssrData;
+// Нет window.ssrData если режим spa
+const isCSR = !Boolean(window.ssrData) || __DEV__;
 
 // Конфигурирование cookies
 const cookies = configureCookies();
@@ -27,14 +26,15 @@ const router = configureRouter({
   setMetaPlugin: setMeta,
   customActionHandler: actionHandler,
   routes,
-  defaultRoute: 'home',
+  allowNotFound: true,
+  enableDeactivationMiddleware: true,
+  queryParamsMode: 'default',
 });
 
 router.setDependencies({
   cookies,
 });
 
-// eslint-disable-next-line
 // @ts-ignore
 router.usePlugin(handleRedirect);
 
@@ -46,73 +46,32 @@ if ('scrollRestoration' in history) {
 /* eslint-enable no-restricted-globals */
 
 // Удаление ssrData из памяти
-delete customWindow.ssrData;
+delete window.ssrData;
 
-// Экземпляр приложения
-let appInstance;
-
-const runApp = (renderer: ReactDOM.Renderer, callback?: () => void) => {
+const runApp = async (renderer: ReactDOM.Renderer, callback?: () => void) => {
   try {
     router.start(() => {
       renderer(
-        <App
-          ref={node => {
-            appInstance = node;
-          }}
-          cookies={cookies}
-          router={router}
-        />,
+        <App cookies={cookies} router={router} />,
         container,
-        () => {
+        async () => {
           if (typeof callback === 'function') {
             callback();
           }
+
+          // add post fetch here if necessary
         },
       );
     });
-    // });
   } catch (err) {
-    renderer(
-      <ErrorPage
-        ref={node => {
-          appInstance = node;
-        }}
-      />,
-      container,
-      () => {
-        if (typeof callback === 'function') {
-          callback();
-        }
-      },
-    );
+    renderer(<ErrorPage router={router} />, container, () => {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
   }
 };
 
-runApp(hydrate);
+const renderer = isCSR ? render : hydrate;
 
-// Автоматический перезапуск приложения
-// В режиме Hot Module Replacement
-if (module.hot) {
-  module.hot.accept('../modules/router/index', () => {
-    const scrollPosition =
-      document.documentElement.scrollTop || document.body.scrollTop;
-    const setScrollPosition = () => {
-      setTimeout(() => {
-        // eslint-disable-next-line no-multi-assign
-        document.documentElement.scrollTop = document.body.scrollTop = scrollPosition;
-      }, 1);
-    };
-
-    if (appInstance && appInstance.updater.isMounted(appInstance)) {
-      runApp(render, () => {
-        deepForceUpdate(appInstance);
-        setScrollPosition();
-      });
-    } else {
-      ReactDOM.unmountComponentAtNode(container);
-      runApp(render, () => {
-        setScrollPosition();
-      });
-    }
-  });
-}
+runApp(renderer);

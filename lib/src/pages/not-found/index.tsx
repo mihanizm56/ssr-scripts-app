@@ -1,18 +1,12 @@
-import React from 'react';
-import { MainLayout } from '../../_layouts/main-layout';
-import { RouteNode } from '../../modules/router/_components/route-node';
+import { IAction, RouteNode } from '@wildberries/service-router';
+import { ROUTES } from '@/_constants/routes';
 import { Page } from './page';
 
-const pageNode = 'not-found';
+const pageNode = ROUTES['not-found'].pageNode;
 
-const action = async ({ router }) => ({
-  title: 'not-found',
-  status: 404,
-  Content: () => (
-    <MainLayout router={router}>
-      <RouteNode nodeName={pageNode}>{() => <Page />}</RouteNode>
-    </MainLayout>
-  ),
+const action: IAction = async () => ({
+  title: 'Not found',
+  content: <RouteNode nodeName={pageNode}>{() => <Page />}</RouteNode>,
 });
 
 export default action;

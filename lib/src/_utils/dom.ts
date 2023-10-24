@@ -37,24 +37,3 @@ export const updateCustomMeta = (property: string, content: string) => {
 export const updateLink = (rel: string, href: string) => {
   updateTag('link', 'rel', rel, 'href', href);
 };
-
-export const getWindowScroll = (): { left: number; top: number } => {
-  const doc = document.documentElement;
-  const left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-  const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-
-  return { left, top };
-};
-
-export const getWindowSize = (): { width: number; height: number } => {
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth;
-  const height =
-    window.innerHeight ||
-    document.documentElement.clientHeight ||
-    document.body.clientHeight;
-
-  return { width, height };
-};

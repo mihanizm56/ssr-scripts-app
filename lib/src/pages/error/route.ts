@@ -1,7 +1,8 @@
+import { ROUTES } from '@/_constants/routes';
+
 export default {
-  name: 'error',
-  path: '/error',
+  name: ROUTES.error.name,
+  path: ROUTES.error.path,
   loadAction: () => import(/* webpackChunkName: 'error' */ './index'),
-  canParallel: true,
   chunks: ['error'],
 };
